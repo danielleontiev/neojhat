@@ -1,0 +1,7 @@
+.vscode/
+.idea/
+.hprof
+neojhat
+*.db/
+coverage.out
+out/
