@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"flag"
@@ -9,34 +9,49 @@ import (
 )
 
 const (
-	threadsSubCmdName = "threads"
-	summarySubCmdName = "summary"
-	objectsSubCmdName = "objects"
+	Threads = "threads"
+	Summary = "summary"
+	Objects = "objects"
 )
 
 var (
-	threadsSubCmd = flag.NewFlagSet(threadsSubCmdName, flag.ExitOnError)
-	summarySubCmd = flag.NewFlagSet(summarySubCmdName, flag.ExitOnError)
-	objectsSubCmd = flag.NewFlagSet(objectsSubCmdName, flag.ExitOnError)
+	ThreadsCommand = flag.NewFlagSet(Threads, flag.ExitOnError)
+	SummaryCommand = flag.NewFlagSet(Summary, flag.ExitOnError)
+	ObjectsCommand = flag.NewFlagSet(Objects, flag.ExitOnError)
 )
 
 func init() {
-	threadsSubCmd.SetOutput(os.Stdout)
-	summarySubCmd.SetOutput(os.Stdout)
-	objectsSubCmd.SetOutput(os.Stdout)
+	ThreadsCommand.SetOutput(os.Stdout)
+	SummaryCommand.SetOutput(os.Stdout)
+	ObjectsCommand.SetOutput(os.Stdout)
+
+	ThreadsCommand.StringVar(&ThreadFlags.Hprof, hprofName, hprofDefault, hprofDesc)
+	ThreadsCommand.BoolVar(&ThreadFlags.NoColor, noColorName, noColorDefault, noColorDesc)
+	ThreadsCommand.BoolVar(&ThreadFlags.NonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
+	ThreadsCommand.BoolVar(&ThreadFlags.LocalVars, localVarsName, localVarsDefault, localVarsDesc)
+
+	SummaryCommand.StringVar(&SummaryFlags.Hprof, hprofName, hprofDefault, hprofDesc)
+	SummaryCommand.BoolVar(&SummaryFlags.NoColor, noColorName, noColorDefault, noColorDesc)
+	SummaryCommand.BoolVar(&SummaryFlags.NonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
+	SummaryCommand.BoolVar(&SummaryFlags.AllProps, allPropsName, allPropsDefault, allPropsDesc)
+
+	ObjectsCommand.StringVar(&ObjectsFlags.Hprof, hprofName, hprofDefault, hprofDesc)
+	ObjectsCommand.BoolVar(&ObjectsFlags.NoColor, noColorName, noColorDefault, noColorDesc)
+	ObjectsCommand.BoolVar(&ObjectsFlags.NonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
+	ObjectsCommand.Var(&ObjectsFlags.SortBy, sortByName, sortByDesc)
 }
 
-func printHelp() {
-	fmt.Printf("neojhat (%s|%s|%s)\n\n", threadsSubCmdName, summarySubCmdName, objectsSubCmdName)
-	threadsSubCmd.Usage()
+func PrintHelp() {
+	fmt.Printf("neojhat (%s|%s|%s)\n\n", Threads, Summary, Objects)
+	ThreadsCommand.Usage()
 	fmt.Println()
-	summarySubCmd.Usage()
+	SummaryCommand.Usage()
 	fmt.Println()
-	objectsSubCmd.Usage()
+	ObjectsCommand.Usage()
 	os.Exit(0)
 }
 
-func printUsage(subCommand *flag.FlagSet) {
+func PrintUsage(subCommand *flag.FlagSet) {
 	subCommand.Usage()
 	os.Exit(0)
 }
@@ -67,45 +82,28 @@ const (
 )
 
 type threadFlags struct {
-	hprof          string
-	noColor        bool
-	nonInteractive bool
-	localVars      bool
+	Hprof          string
+	NoColor        bool
+	NonInteractive bool
+	LocalVars      bool
 }
 
 type summaryFlags struct {
-	hprof          string
-	noColor        bool
-	nonInteractive bool
-	allProps       bool
+	Hprof          string
+	NoColor        bool
+	NonInteractive bool
+	AllProps       bool
 }
 
 type objectsFlags struct {
-	hprof          string
-	noColor        bool
-	nonInteractive bool
-	sortBy         objects.SortBy
+	Hprof          string
+	NoColor        bool
+	NonInteractive bool
+	SortBy         objects.SortBy
 }
 
 var (
-	threadFlagsValues  threadFlags
-	summaryFlagsValues summaryFlags
-	objectsFlagsValues objectsFlags
+	ThreadFlags  threadFlags
+	SummaryFlags summaryFlags
+	ObjectsFlags objectsFlags
 )
-
-func init() {
-	threadsSubCmd.StringVar(&threadFlagsValues.hprof, hprofName, hprofDefault, hprofDesc)
-	threadsSubCmd.BoolVar(&threadFlagsValues.noColor, noColorName, noColorDefault, noColorDesc)
-	threadsSubCmd.BoolVar(&threadFlagsValues.nonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
-	threadsSubCmd.BoolVar(&threadFlagsValues.localVars, localVarsName, localVarsDefault, localVarsDesc)
-
-	summarySubCmd.StringVar(&summaryFlagsValues.hprof, hprofName, hprofDefault, hprofDesc)
-	summarySubCmd.BoolVar(&summaryFlagsValues.noColor, noColorName, noColorDefault, noColorDesc)
-	summarySubCmd.BoolVar(&summaryFlagsValues.nonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
-	summarySubCmd.BoolVar(&summaryFlagsValues.allProps, allPropsName, allPropsDefault, allPropsDesc)
-
-	objectsSubCmd.StringVar(&objectsFlagsValues.hprof, hprofName, hprofDefault, hprofDesc)
-	objectsSubCmd.BoolVar(&objectsFlagsValues.noColor, noColorName, noColorDefault, noColorDesc)
-	objectsSubCmd.BoolVar(&objectsFlagsValues.nonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
-	objectsSubCmd.Var(&objectsFlagsValues.sortBy, sortByName, sortByDesc)
-}

@@ -10,6 +10,15 @@ with huge dump files that do not fit into computer RAM.
 Go to **Actions**, select the latest successful pipeline, click **Summary** and download `neojhat.zip`
 from **Artifacts** section.
 
+### Compile and install with `go install`
+
+1. Make sure you have `Go` installed. Refer to https://go.dev/dl/ for installation instructions.
+2. Run the command
+```sh
+go install github.com/danielleontiev/neojhat@latest
+```
+3. Add `$USER/go/bin` to your `$PATH` or run directly from the directory
+
 ## Help
 
 ```sh

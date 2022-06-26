@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ const (
 	metaFileName               = "meta.bin"
 )
 
-func getThreads(hprofFileName string, noColor, localVars bool) error {
+func GetThreads(hprofFileName string, noColor, localVars bool) error {
 	hprof, err := os.Open(hprofFileName)
 	if err != nil {
 		return fmt.Errorf("can't open file [%s]: %w", hprofFileName, err)
@@ -68,7 +68,7 @@ func getThreads(hprofFileName string, noColor, localVars bool) error {
 	return nil
 }
 
-func getSummary(hprofFileName string, noColor, allProps bool) error {
+func GetSummary(hprofFileName string, noColor, allProps bool) error {
 	hprof, err := os.Open(hprofFileName)
 	if err != nil {
 		return fmt.Errorf("can't open file [%s]: %w", hprofFileName, err)
@@ -112,7 +112,7 @@ func getSummary(hprofFileName string, noColor, allProps bool) error {
 	return nil
 }
 
-func getObjects(hprofFileName string, noColor bool, sortBy objects.SortBy) error {
+func GetObjects(hprofFileName string, noColor bool, sortBy objects.SortBy) error {
 	hprof, err := os.Open(hprofFileName)
 	if err != nil {
 		return fmt.Errorf("can't open file [%s]: %w", hprofFileName, err)
@@ -156,7 +156,7 @@ func getObjects(hprofFileName string, noColor bool, sortBy objects.SortBy) error
 	return nil
 }
 
-func parseHprof(hprofFileName string, nonInteractive bool) error {
+func ParseHprof(hprofFileName string, nonInteractive bool) error {
 	hprof, err := os.Open(hprofFileName)
 	if err != nil {
 		return fmt.Errorf("can't open file [%s]: %w", hprofFileName, err)
