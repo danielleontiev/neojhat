@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/danielleontiev/neojhat/format"
 	"github.com/danielleontiev/neojhat/printing"
@@ -19,13 +20,17 @@ func PrettyPrintColor(objects Objects) {
 }
 
 func print(objects Objects, headerColor, summaryColor, classNameColor, numColor func(s string) string) {
-	var printItems []printItem = []printItem{
-		{Name: "Class", InstancesCount: "Count", TotalSize: "Size"},
-	}
+	var printItems []printItem
 	switch objects.SortBy {
 	case Size:
+		printItems = append(printItems, printItem{
+			Name: "Class Name", InstancesCount: "Count", TotalSize: "Size ↓",
+		})
 		sort.Slice(objects.Items, func(i, j int) bool { return objects.Items[i].TotalSize > objects.Items[j].TotalSize })
 	case Count:
+		printItems = append(printItems, printItem{
+			Name: "Class Name", InstancesCount: "Count ↓", TotalSize: "Size",
+		})
 		sort.Slice(objects.Items, func(i, j int) bool { return objects.Items[i].InstancesCount > objects.Items[j].InstancesCount })
 	}
 	for _, item := range objects.Items {
@@ -50,10 +55,10 @@ func print(objects Objects, headerColor, summaryColor, classNameColor, numColor 
 	}
 
 	alignRight := func(s string, max int) string {
-		return strings.Repeat(" ", max+gap-len(s)) + s
+		return strings.Repeat(" ", max+gap-utf8.RuneCountInString(s)) + s
 	}
 	alignLeft := func(s string, max int) string {
-		return s + strings.Repeat(" ", max+gap-len(s))
+		return s + strings.Repeat(" ", max+gap-utf8.RuneCountInString(s))
 	}
 	stringifyItem := func(i printItem) string {
 		name := alignLeft(i.Name, maxName)
@@ -63,12 +68,14 @@ func print(objects Objects, headerColor, summaryColor, classNameColor, numColor 
 	}
 
 	instances := fmt.Sprintf("Instances: %v", objects.TotalCount)
-	size := fmt.Sprintf("Total Suze: %v", format.Size(objects.TotalSize))
+	size := fmt.Sprintf("Total Size: %v", format.Size(objects.TotalSize))
 	fmt.Println(summaryColor(instances))
 	fmt.Println(summaryColor(size))
 	fmt.Println()
 
-	header := alignLeft("Class Name", maxName) + " |" + alignRight("Count", maxCount) + " |" + alignRight("Size", maxSize) + " |"
+	headerItem := printItems[0]
+	header := alignLeft(headerItem.Name, maxName) + " |" + alignRight(headerItem.InstancesCount, maxCount) +
+		" |" + alignRight(headerItem.TotalSize, maxSize) + " |"
 	fmt.Println(headerColor(header))
 	fmt.Println(strings.Repeat("-", gap*3+maxName+maxCount+maxSize+6))
 	for _, item := range printItems[1:] {

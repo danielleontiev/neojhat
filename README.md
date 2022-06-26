@@ -231,7 +231,7 @@ neojhat objects --hprof /path/to/hprof/file --sort-by count
 Instances: 73224
 Total Suze: 2M
 
-Class Name                                       |                Count |                Size |
+Class Name                                       |              Count ↓ |                Size |
 -----------------------------------------------------------------------------------------------
 byte[]                                           |          16558 (22%) |          571K (22%) |
 java.lang.String                                 |          16004 (21%) |           203K (7%) |
@@ -251,7 +251,7 @@ neojhat objects --hprof /path/to/hprof/file --sort-by size
 Instances: 73224
 Total Suze: 2M
 
-Class Name                                       |                Count |                Size |
+Class Name                                       |                Count |              Size ↓ |
 -----------------------------------------------------------------------------------------------
 byte[]                                           |          16558 (22%) |          571K (22%) |
 java.lang.Object[]                               |            3141 (4%) |          340K (13%) |
