@@ -2,7 +2,9 @@ package summary
 
 import (
 	"fmt"
+	"io"
 	"math"
+	"os"
 	"sort"
 	"strings"
 
@@ -11,39 +13,39 @@ import (
 
 // PrettyPrint prints given Properties
 // in beautiful manner
-func PrettyPrint(s Summary) {
+func PrettyPrint(s Summary, destination io.Writer) {
 	identity := func(s string) string { return s }
-	printSummary(s, identity, identity, identity)
+	printSummary(s, identity, identity, identity, destination)
 }
 
 // PrettyPrintColor prints given Properties
 // in beautiful manner with colors
 func PrettyPrintColor(s Summary) {
-	printSummary(s, printing.Blue, printing.Bold, printing.Cyan)
+	printSummary(s, printing.Blue, printing.Bold, printing.Cyan, os.Stdout)
 }
 
-func printSummary(s Summary, titleColor, keyColor, valColor func(string) string) {
+func printSummary(s Summary, titleColor, keyColor, valColor func(string) string, destination io.Writer) {
 	maxKeyLen := maxKeyLength(s)
 	env := titleColor("- Environment")
 	heap := titleColor("- Heap")
 	system := titleColor("- System")
 	props := titleColor("- Properties")
-	fmt.Println(env)
-	printProperties(s.env, maxKeyLen, keyColor, valColor)
-	fmt.Println()
-	fmt.Println(heap)
-	printProperties(s.heap, maxKeyLen, keyColor, valColor)
-	fmt.Println()
-	fmt.Println(system)
-	printProperties(s.system, maxKeyLen, keyColor, valColor)
-	if s.properties != nil {
-		fmt.Println()
-		fmt.Println(props)
-		printProperties(s.properties, maxKeyLen, keyColor, valColor)
+	fmt.Fprintln(destination, env)
+	printProperties(s.Env, maxKeyLen, keyColor, valColor, destination)
+	fmt.Fprintln(destination)
+	fmt.Fprintln(destination, heap)
+	printProperties(s.Heap, maxKeyLen, keyColor, valColor, destination)
+	fmt.Fprintln(destination)
+	fmt.Fprintln(destination, system)
+	printProperties(s.System, maxKeyLen, keyColor, valColor, destination)
+	if s.Properties != nil {
+		fmt.Fprintln(destination)
+		fmt.Fprintln(destination, props)
+		printProperties(s.Properties, maxKeyLen, keyColor, valColor, destination)
 	}
 }
 
-func printProperties(properties Properties, maxKeyLen int, keyColor, valColor func(string) string) {
+func printProperties(properties Properties, maxKeyLen int, keyColor, valColor func(string) string, destination io.Writer) {
 	const spaceCount = 10
 	var keys []string
 	for k := range properties {
@@ -54,7 +56,7 @@ func printProperties(properties Properties, maxKeyLen int, keyColor, valColor fu
 		v := strings.TrimSpace(properties[k])
 		spaceSize := maxKeyLen + spaceCount - len(k)
 		s := keyColor(k) + ":" + strings.Repeat(" ", spaceSize) + valColor(v) + "\n"
-		fmt.Print(s)
+		fmt.Fprint(destination, s)
 	}
 }
 
@@ -69,5 +71,5 @@ func maxKeyLength(s Summary) int {
 		}
 		return float64(maxKeyLen)
 	}
-	return int(math.Max(maxFromProps(s.env), math.Max(maxFromProps(s.heap), maxFromProps(s.properties))))
+	return int(math.Max(maxFromProps(s.Env), math.Max(maxFromProps(s.Heap), maxFromProps(s.Properties))))
 }

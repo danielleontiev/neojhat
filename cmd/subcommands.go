@@ -61,7 +61,7 @@ func GetThreads(hprofFileName string, noColor, localVars bool) error {
 		return fmt.Errorf("can't parse thread dump: %w", err)
 	}
 	if noColor {
-		threaddump.PrettyPrint(threadDump, localVars)
+		threaddump.PrettyPrint(threadDump, localVars, os.Stdout)
 		return nil
 	}
 	threaddump.PrettyPrintColor(threadDump, localVars)
@@ -105,7 +105,7 @@ func GetSummary(hprofFileName string, noColor, allProps bool) error {
 		return fmt.Errorf("can't parse summary: %w", err)
 	}
 	if noColor {
-		summary.PrettyPrint(s)
+		summary.PrettyPrint(s, os.Stdout)
 		return nil
 	}
 	summary.PrettyPrintColor(s)
@@ -149,7 +149,7 @@ func GetObjects(hprofFileName string, noColor bool, sortBy objects.SortBy) error
 		return fmt.Errorf("can't parse objects: %w", err)
 	}
 	if noColor {
-		objects.PrettyPrint(obj)
+		objects.PrettyPrint(obj, os.Stdout)
 		return nil
 	}
 	objects.PrettyPrintColor(obj)

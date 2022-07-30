@@ -1,0 +1,4 @@
+"main", ID=1, prio=5, status=TIMED_WAITING
+    void java.lang.Thread.sleep(long) Thread.java:NativeMethod
+    void Main.main(java.lang.String[]) Main.java:6
+
