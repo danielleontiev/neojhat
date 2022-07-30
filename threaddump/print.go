@@ -2,6 +2,7 @@ package threaddump
 
 import (
 	"fmt"
+	"io"
 	"sort"
 	"strings"
 
@@ -12,22 +13,22 @@ import (
 
 // PrettyPrint prints given thread dump
 // in beautiful manner
-func PrettyPrint(threadDump ThreadDump, localVars bool) {
+func PrettyPrint(threadDump ThreadDump, localVars bool, destination io.Writer) {
 	traces := threadDump.StackTraces
 	sort.Slice(traces, func(i, j int) bool {
 		return traces[i].ThreadId < traces[j].ThreadId
 	})
 	for _, stackTrace := range traces {
-		fmt.Println(createPrettyThread(stackTrace))
+		fmt.Fprintln(destination, createPrettyThread(stackTrace))
 		for _, frame := range stackTrace.Frames {
-			fmt.Printf("	%s\n", createPrettyFrame(frame))
+			fmt.Fprintf(destination, "    %s\n", createPrettyFrame(frame))
 			if localVars {
 				for _, local := range frame.LocalFrames {
-					fmt.Printf("		local %s\n", createPrettyStackVariable(local))
+					fmt.Fprintf(destination, "        local %s\n", createPrettyStackVariable(local))
 				}
 			}
 		}
-		fmt.Println()
+		fmt.Fprintln(destination)
 	}
 }
 

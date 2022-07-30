@@ -2,6 +2,8 @@ package objects
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"sort"
 	"strings"
 	"unicode/utf8"
@@ -10,16 +12,16 @@ import (
 	"github.com/danielleontiev/neojhat/printing"
 )
 
-func PrettyPrint(objects Objects) {
+func PrettyPrint(objects Objects, destination io.Writer) {
 	id := func(s string) string { return s }
-	print(objects, id, id, id, id)
+	print(objects, id, id, id, id, destination)
 }
 
 func PrettyPrintColor(objects Objects) {
-	print(objects, printing.Bold, printing.Cyan, printing.Yellow, printing.Blue)
+	print(objects, printing.Bold, printing.Cyan, printing.Yellow, printing.Blue, os.Stdout)
 }
 
-func print(objects Objects, headerColor, summaryColor, classNameColor, numColor func(s string) string) {
+func print(objects Objects, headerColor, summaryColor, classNameColor, numColor func(s string) string, destination io.Writer) {
 	var printItems []printItem
 	switch objects.SortBy {
 	case Size:
@@ -69,16 +71,16 @@ func print(objects Objects, headerColor, summaryColor, classNameColor, numColor 
 
 	instances := fmt.Sprintf("Instances: %v", objects.TotalCount)
 	size := fmt.Sprintf("Total Size: %v", format.Size(objects.TotalSize))
-	fmt.Println(summaryColor(instances))
-	fmt.Println(summaryColor(size))
-	fmt.Println()
+	fmt.Fprintln(destination, summaryColor(instances))
+	fmt.Fprintln(destination, summaryColor(size))
+	fmt.Fprintln(destination)
 
 	headerItem := printItems[0]
 	header := alignLeft(headerItem.Name, maxName) + " |" + alignRight(headerItem.InstancesCount, maxCount) +
 		" |" + alignRight(headerItem.TotalSize, maxSize) + " |"
-	fmt.Println(headerColor(header))
-	fmt.Println(strings.Repeat("-", gap*3+maxName+maxCount+maxSize+6))
+	fmt.Fprintln(destination, headerColor(header))
+	fmt.Fprintln(destination, strings.Repeat("-", gap*3+maxName+maxCount+maxSize+6))
 	for _, item := range printItems[1:] {
-		fmt.Println(stringifyItem(item))
+		fmt.Fprintln(destination, stringifyItem(item))
 	}
 }

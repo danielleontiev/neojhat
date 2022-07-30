@@ -24,10 +24,10 @@ const (
 type Properties = map[string]string
 
 type Summary struct {
-	properties Properties
-	env        Properties
-	heap       Properties
-	system     Properties
+	Properties Properties
+	Env        Properties
+	Heap       Properties
+	System     Properties
 }
 
 // GetSummary parses given .hprof file and extracts Summay from
@@ -56,17 +56,17 @@ func GetSummary(parsedAccessor *dump.ParsedAccessor, allProps bool) (Summary, er
 	}
 	if allProps {
 		return Summary{
-			properties: properties,
-			env:        env,
-			heap:       heap,
-			system:     system,
+			Properties: properties,
+			Env:        env,
+			Heap:       heap,
+			System:     system,
 		}, nil
 	}
 	return Summary{
-		properties: nil,
-		env:        env,
-		heap:       heap,
-		system:     system,
+		Properties: nil,
+		Env:        env,
+		Heap:       heap,
+		System:     system,
 	}, nil
 }
 
