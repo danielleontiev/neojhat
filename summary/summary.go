@@ -7,30 +7,49 @@ package summary
 
 import (
 	"fmt"
-	"strconv"
+	"sort"
 	"time"
 
 	"github.com/danielleontiev/neojhat/core"
 	"github.com/danielleontiev/neojhat/dump"
-	"github.com/danielleontiev/neojhat/format"
 	"github.com/danielleontiev/neojhat/java"
 )
 
 const (
-	javaLangSystemClassName         = "java/lang/System"
-	managmentFactoryHelperClassName = "sun/management/ManagementFactoryHelper"
+	javaLangSystemClassName          = "java/lang/System"
+	managementFactoryHelperClassName = "sun/management/ManagementFactoryHelper"
 )
 
 type Properties = map[string]string
-
+type Kv struct {
+	Key string
+	Val string
+}
+type EnvProperties struct {
+	System       string
+	Architecture string
+	JavaHome     string
+	JavaVersion  string
+	JavaName     string
+	JavaVendor   string
+}
+type HeapProperties struct {
+	Classes   int
+	GcRoots   int
+	Instances int
+	HeapSize  int
+}
+type SystemProperties struct {
+	JvmUptime string
+}
 type Summary struct {
-	properties Properties
-	env        Properties
-	heap       Properties
-	system     Properties
+	Env        EnvProperties
+	Heap       HeapProperties
+	System     SystemProperties
+	Properties []Kv
 }
 
-// GetSummary parses given .hprof file and extracts Summay from
+// GetSummary parses given .hprof file and extracts Summary from
 // it. Summary consists of short heap info, important env info and
 // all system properties from java.lang.System class
 // (private static java.util.Properties props).
@@ -56,17 +75,17 @@ func GetSummary(parsedAccessor *dump.ParsedAccessor, allProps bool) (Summary, er
 	}
 	if allProps {
 		return Summary{
-			properties: properties,
-			env:        env,
-			heap:       heap,
-			system:     system,
+			Env:        env,
+			Heap:       heap,
+			System:     system,
+			Properties: makeSortedList(properties),
 		}, nil
 	}
 	return Summary{
-		properties: nil,
-		env:        env,
-		heap:       heap,
-		system:     system,
+		Env:        env,
+		Heap:       heap,
+		System:     system,
+		Properties: nil,
 	}, nil
 }
 
@@ -147,21 +166,21 @@ func getAllProps(parsedAccessor *dump.ParsedAccessor) (Properties, error) {
 	return Properties(resultProps), nil
 }
 
-func getEnv(props Properties) Properties {
-	return map[string]string{
-		"System":       props["os.name"],
-		"Architecture": props["os.arch"],
-		"JavaHome":     props["java.home"],
-		"JavaVersion":  props["java.version"],
-		"JavaName": fmt.Sprintf("%s (%s, %s)",
+func getEnv(props Properties) EnvProperties {
+	return EnvProperties{
+		System:       props["os.name"],
+		Architecture: props["os.arch"],
+		JavaHome:     props["java.home"],
+		JavaVersion:  props["java.version"],
+		JavaName: fmt.Sprintf("%s (%s, %s)",
 			props["java.vm.name"],
 			props["java.vm.version"],
 			props["java.vm.info"]),
-		"JavaVendor": props["java.vm.vendor"],
+		JavaVendor: props["java.vm.vendor"],
 	}
 }
 
-func getHeap(parsedAccessor *dump.ParsedAccessor) (Properties, error) {
+func getHeap(parsedAccessor *dump.ParsedAccessor) (HeapProperties, error) {
 	classes := parsedAccessor.ListHprofLoadClass()
 	gcRootsCount := len(parsedAccessor.HprofGcRootJavaFrame) + len(parsedAccessor.HprofGcRootJniGlobal) +
 		len(parsedAccessor.HprofGcRootJniLocal) + len(parsedAccessor.ListHprofGcRootStickyClass()) +
@@ -183,7 +202,7 @@ func getHeap(parsedAccessor *dump.ParsedAccessor) (Properties, error) {
 	for classId, num := range meta.Counters.InstancesCount {
 		class, err := parsedAccessor.GetHprofGcClassDump(classId)
 		if err != nil {
-			return nil, err
+			return HeapProperties{}, err
 		}
 		totalSize += int(class.InstanceSize) * num
 	}
@@ -197,27 +216,27 @@ func getHeap(parsedAccessor *dump.ParsedAccessor) (Properties, error) {
 	for _, num := range meta.Counters.InstancesCount {
 		totalCount += num
 	}
-	return map[string]string{
-		"Classes":   strconv.Itoa(len(classSet)),
-		"GC Roots":  strconv.Itoa(gcRootsCount),
-		"Instances": strconv.Itoa(totalCount),
-		"Heap Size": format.Size(totalSize),
+	return HeapProperties{
+		Classes:   len(classSet),
+		GcRoots:   gcRootsCount,
+		Instances: totalCount,
+		HeapSize:  totalSize,
 	}, nil
 }
 
-func getSystem(parsedAccessor *dump.ParsedAccessor) (Properties, error) {
+func getSystem(parsedAccessor *dump.ParsedAccessor) (SystemProperties, error) {
 	jvmStartupTime, err := getJvmStartTime(parsedAccessor)
 	if err != nil {
-		return nil, err
+		return SystemProperties{}, err
 	}
 	uptime := parsedAccessor.Timestamp.Sub(jvmStartupTime)
-	return map[string]string{
-		"JVM Uptime": uptime.String(),
+	return SystemProperties{
+		JvmUptime: uptime.String(),
 	}, nil
 }
 
 func getJvmStartTime(parsedAccessor *dump.ParsedAccessor) (time.Time, error) {
-	jmxFactoryHelper, err := getClassByName(parsedAccessor, managmentFactoryHelperClassName)
+	jmxFactoryHelper, err := getClassByName(parsedAccessor, managementFactoryHelperClassName)
 	if err != nil {
 		return time.Time{}, err
 	}
@@ -264,4 +283,13 @@ func getClassByName(parsedAccessor *dump.ParsedAccessor, className string) (java
 	}
 	class, err := heap.ParseClass(targetLoadClass.ClassObjectId)
 	return class, err
+}
+
+func makeSortedList(m map[string]string) []Kv {
+	var list []Kv
+	for k, v := range m {
+		list = append(list, Kv{k, v})
+	}
+	sort.Slice(list, func(i, j int) bool { return list[i].Key < list[j].Key })
+	return list
 }
