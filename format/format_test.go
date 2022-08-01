@@ -1,7 +1,9 @@
-package format
+package format_test
 
 import (
 	"testing"
+
+	"github.com/danielleontiev/neojhat/format"
 )
 
 func TestClassName(t *testing.T) {
@@ -20,7 +22,7 @@ func TestClassName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.className, func(t *testing.T) {
-			if got := ClassName(tt.className); got != tt.want {
+			if got := format.ClassName(tt.className); got != tt.want {
 				t.Errorf("ClassName() = %v, want %v", got, tt.want)
 			}
 		})
@@ -61,7 +63,7 @@ func TestSignature(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.signature, func(t *testing.T) {
-			arg, ret := Signature(tt.signature)
+			arg, ret := format.Signature(tt.signature)
 			if arg != tt.wantArg {
 				t.Errorf("Signature() got = %v, want %v", arg, tt.wantArg)
 			}
@@ -101,7 +103,7 @@ func TestSize(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Size(tt.bytes); got != tt.want {
+			if got := format.Size(tt.bytes); got != tt.want {
 				t.Errorf("Size() = %v, want %v", got, tt.want)
 			}
 		})
