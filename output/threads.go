@@ -1,37 +1,35 @@
-package threads
+package output
 
 import (
 	"fmt"
+	"io"
 	"sort"
 	"strings"
 
 	"github.com/danielleontiev/neojhat/core"
 	"github.com/danielleontiev/neojhat/format"
-	"github.com/danielleontiev/neojhat/printing"
+	"github.com/danielleontiev/neojhat/threads"
 )
 
-// PrettyPrint prints given thread dump
+// ThreadsPlain prints given thread dump
 // in beautiful manner
-func PrettyPrint(threadDump ThreadDump, localVars bool) {
-	traces := threadDump.StackTraces
-	sort.Slice(traces, func(i, j int) bool {
-		return traces[i].ThreadId < traces[j].ThreadId
-	})
+func ThreadsPlain(threadDump threads.ThreadDump, localVars bool, destination io.Writer) {
+	traces := getSortedStackTraces(threadDump)
 	for _, stackTrace := range traces {
-		fmt.Println(createPrettyThread(stackTrace))
+		fmt.Fprintln(destination, createPrettyThread(stackTrace))
 		for _, frame := range stackTrace.Frames {
-			fmt.Printf("	%s\n", createPrettyFrame(frame))
+			fmt.Fprintf(destination, "    %s\n", createPrettyFrame(frame))
 			if localVars {
 				for _, local := range frame.LocalFrames {
-					fmt.Printf("		local %s\n", createPrettyStackVariable(local))
+					fmt.Fprintf(destination, "        local %s\n", createPrettyStackVariable(local))
 				}
 			}
 		}
-		fmt.Println()
+		fmt.Fprintln(destination)
 	}
 }
 
-func createPrettyThread(stackTrace StackTrace) string {
+func createPrettyThread(stackTrace threads.StackTrace) string {
 	threadDesc := fmt.Sprintf(
 		"\"%v\", ID=%v, prio=%v, status=%v",
 		stackTrace.ThreadName,
@@ -45,14 +43,14 @@ func createPrettyThread(stackTrace StackTrace) string {
 	return threadDesc
 }
 
-func createPrettyFrame(frame StackFrame) string {
+func createPrettyFrame(frame threads.StackFrame) string {
 	prettyClassName := format.ClassName(frame.ClassName)
 	args, ret := format.Signature(frame.MethodSignature)
 	prettyLocation := createLocation(frame.FileName, frame.LineNumber)
 	return ret + " " + format.ClassName(prettyClassName) + "." + frame.MethodName + "(" + args + ")" + " " + prettyLocation
 }
 
-func createPrettyStackVariable(localFrame LocalFrame) string {
+func createPrettyStackVariable(localFrame threads.LocalFrame) string {
 	signature := localFrame.ObjectTypeSignature
 	if !strings.HasPrefix(signature, "[") { // it's object
 		signature = "L" + signature + ";"
@@ -65,7 +63,7 @@ func createPrettyStackVariable(localFrame LocalFrame) string {
 }
 
 func createLocation(fileName, lineNumber string) string {
-	if fileName == unknownString {
+	if fileName == threads.UnknownString {
 		return ""
 	}
 	if lineNumber == core.Unknown.String() {
@@ -74,21 +72,26 @@ func createLocation(fileName, lineNumber string) string {
 	return fmt.Sprintf("%s:%s", fileName, lineNumber)
 }
 
-// PrettyPrintColor prints given thread dump
-// in beautiful manner with ANSI colors
-func PrettyPrintColor(threadDump ThreadDump, localVars bool) {
+func getSortedStackTraces(threadDump threads.ThreadDump) []threads.StackTrace {
 	traces := threadDump.StackTraces
 	sort.Slice(traces, func(i, j int) bool {
 		return traces[i].ThreadId < traces[j].ThreadId
 	})
+	return traces
+}
+
+// ThreadsPlainColor prints given thread dump
+// in beautiful manner with ANSI colors
+func ThreadsPlainColor(threadDump threads.ThreadDump, localVars bool) {
+	traces := getSortedStackTraces(threadDump)
 	for _, stackTrace := range traces {
-		fmt.Println(printing.Bold(createPrettyThread(stackTrace)))
+		fmt.Println(Bold(createPrettyThread(stackTrace)))
 		for _, frame := range stackTrace.Frames {
 			fmt.Printf("	%s\n", createPrettyColorfulFrame(frame))
 			if localVars {
 				for _, local := range frame.LocalFrames {
 					localString := createPrettyStackVariable(local)
-					fmt.Printf("		local %s\n", printing.Blue(localString))
+					fmt.Printf("		local %s\n", Blue(localString))
 				}
 			}
 		}
@@ -96,9 +99,9 @@ func PrettyPrintColor(threadDump ThreadDump, localVars bool) {
 	}
 }
 
-func createPrettyColorfulFrame(frame StackFrame) string {
-	prettyClassName := printing.Yellow(format.ClassName(frame.ClassName))
+func createPrettyColorfulFrame(frame threads.StackFrame) string {
+	prettyClassName := Yellow(format.ClassName(frame.ClassName))
 	args, ret := format.Signature(frame.MethodSignature)
-	prettyLocation := printing.Cyan(createLocation(frame.FileName, frame.LineNumber))
-	return ret + " " + prettyClassName + printing.Yellow(".") + printing.Red(frame.MethodName) + "(" + args + ")" + " " + prettyLocation
+	prettyLocation := Cyan(createLocation(frame.FileName, frame.LineNumber))
+	return ret + " " + prettyClassName + Yellow(".") + Red(frame.MethodName) + "(" + args + ")" + " " + prettyLocation
 }

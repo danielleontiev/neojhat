@@ -1,0 +1,20 @@
+- Environment
+Architecture:          x86_64
+JavaHome:              /Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home
+JavaName:              OpenJDK 64-Bit Server VM (11.0.12+7, mixed mode)
+JavaVendor:            Eclipse Foundation
+JavaVersion:           11.0.12
+System:                Mac OS X
+
+- Heap
+Classes:               42
+GC Roots:              43
+Instances:             45
+Heap Size:             44B
+
+- System
+JVM Uptime:            40s
+
+- Properties
+awt.toolkit:           sun.lwawt.macosx.LWCToolkit
+

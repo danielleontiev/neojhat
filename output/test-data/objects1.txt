@@ -1,0 +1,10 @@
+Instances: 73224
+Total Size: 2M
+
+Class Name                         |                Count |              Size ↓ |
+---------------------------------------------------------------------------------
+byte[]                             |          16558 (22%) |          557K (27%) |
+java.lang.Object[]                 |            3141 (4%) |          332K (16%) |
+java.lang.String                   |          16004 (21%) |           198K (9%) |
+java.lang.reflect.Method           |            1119 (1%) |           138K (6%) |
+java.util.HashMap$Node             |            4851 (6%) |           128K (6%) |

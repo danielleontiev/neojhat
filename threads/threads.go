@@ -1,7 +1,6 @@
 /*
 	threads extracts thread dump of JVM at the moment heap dump
-	was taken and outputs it. It also has functions for pretty-print
-	the result.
+	was taken and outputs it.
 
 	Collecting the thread dump from .hprof file is the following
 	process:
@@ -29,7 +28,7 @@ import (
 )
 
 var (
-	unknownString = "<unknown string>"
+	UnknownString = "<unknown string>"
 )
 
 // GetThreadDump implements the whole collecting process described above.
@@ -166,15 +165,15 @@ func GetThreadDump(parsedAccessor *dump.ParsedAccessor) (ThreadDump, error) {
 			}
 			methodName, err := parsedAccessor.GetHprofUtf8(stackFrame.MethodNameId)
 			if err != nil {
-				methodName = core.HprofUtf8{Characters: unknownString}
+				methodName = core.HprofUtf8{Characters: UnknownString}
 			}
 			methodSignature, err := parsedAccessor.GetHprofUtf8(stackFrame.MethodSignatureId)
 			if err != nil {
-				methodSignature = core.HprofUtf8{Characters: unknownString}
+				methodSignature = core.HprofUtf8{Characters: UnknownString}
 			}
 			fileName, err := parsedAccessor.GetHprofUtf8(stackFrame.SourceFileNameId)
 			if err != nil {
-				fileName = core.HprofUtf8{Characters: unknownString}
+				fileName = core.HprofUtf8{Characters: UnknownString}
 			}
 			class, err := parsedAccessor.GetHprofLoadClassByClassSerialNumer(stackFrame.ClassSerialNumber)
 			if err != nil {
@@ -182,7 +181,7 @@ func GetThreadDump(parsedAccessor *dump.ParsedAccessor) (ThreadDump, error) {
 			}
 			className, err := parsedAccessor.GetHprofUtf8(class.ClassNameId)
 			if err != nil {
-				className = core.HprofUtf8{Characters: unknownString}
+				className = core.HprofUtf8{Characters: UnknownString}
 			}
 			threadSequenceNumber := threadSerialNumber(threadObj.ThreadSequenceNumber)
 			positionInStackFrame := positionInStack(position)

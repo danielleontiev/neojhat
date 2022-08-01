@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielleontiev/neojhat/dump"
 	"github.com/danielleontiev/neojhat/objects"
+	"github.com/danielleontiev/neojhat/output"
 	"github.com/danielleontiev/neojhat/storage"
 	"github.com/danielleontiev/neojhat/summary"
 	"github.com/danielleontiev/neojhat/threads"
@@ -61,10 +62,10 @@ func GetThreads(hprofFileName string, noColor, localVars bool) error {
 		return fmt.Errorf("can't parse thread dump: %w", err)
 	}
 	if noColor {
-		threads.PrettyPrint(threadDump, localVars)
+		output.ThreadsPlain(threadDump, localVars, os.Stdout)
 		return nil
 	}
-	threads.PrettyPrintColor(threadDump, localVars)
+	output.ThreadsPlainColor(threadDump, localVars)
 	return nil
 }
 
@@ -105,10 +106,10 @@ func GetSummary(hprofFileName string, noColor, allProps bool) error {
 		return fmt.Errorf("can't parse summary: %w", err)
 	}
 	if noColor {
-		summary.PrettyPrint(s)
+		output.SummaryPlain(s, os.Stdout)
 		return nil
 	}
-	summary.PrettyPrintColor(s)
+	output.SummaryPlainColor(s)
 	return nil
 }
 
@@ -149,10 +150,10 @@ func GetObjects(hprofFileName string, noColor bool, sortBy objects.SortBy) error
 		return fmt.Errorf("can't parse objects: %w", err)
 	}
 	if noColor {
-		objects.PrettyPrint(obj)
+		output.ObjectsPlain(obj, os.Stdout)
 		return nil
 	}
-	objects.PrettyPrintColor(obj)
+	output.ObjectsPlainColor(obj)
 	return nil
 }
 

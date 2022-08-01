@@ -1,13 +1,14 @@
-package threads
+package output
 
 import (
 	"testing"
 
 	"github.com/danielleontiev/neojhat/core"
+	"github.com/danielleontiev/neojhat/threads"
 )
 
 func TestCreatePrettyThread(t *testing.T) {
-	stackTrace := StackTrace{
+	stackTrace := threads.StackTrace{
 		ThreadName:     "thread",
 		ThreadId:       1,
 		ThreadDaemon:   true,
@@ -21,7 +22,7 @@ func TestCreatePrettyThread(t *testing.T) {
 }
 
 func TestCreatePrettyFrame(t *testing.T) {
-	frame := StackFrame{
+	frame := threads.StackFrame{
 		MethodName:      "main",
 		MethodSignature: "([Ljava/lang/String;)V",
 		FileName:        "Main.java",
@@ -43,7 +44,7 @@ func Test_createLocation(t *testing.T) {
 	}{
 		{
 			name:     "unknown file",
-			fileName: unknownString,
+			fileName: threads.UnknownString,
 			want:     "",
 		},
 		{
@@ -71,22 +72,22 @@ func Test_createLocation(t *testing.T) {
 func Test_createPrettyStackVariable(t *testing.T) {
 	tests := []struct {
 		name       string
-		localFrame LocalFrame
+		localFrame threads.LocalFrame
 		want       string
 	}{
 		{
 			name:       "object",
-			localFrame: LocalFrame{ObjectTypeSignature: "java/lang/String"},
+			localFrame: threads.LocalFrame{ObjectTypeSignature: "java/lang/String"},
 			want:       "java.lang.String",
 		},
 		{
 			name:       "array",
-			localFrame: LocalFrame{ObjectTypeSignature: "[B"},
+			localFrame: threads.LocalFrame{ObjectTypeSignature: "[B"},
 			want:       "byte[]",
 		},
 		{
 			name:       "class",
-			localFrame: LocalFrame{ObjectTypeSignature: "class Main"},
+			localFrame: threads.LocalFrame{ObjectTypeSignature: "class Main"},
 			want:       "class Main",
 		},
 	}

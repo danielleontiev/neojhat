@@ -40,12 +40,6 @@ type ObjectItem struct {
 	InstancesCount int
 }
 
-type printItem struct {
-	Name           string
-	TotalSize      string
-	InstancesCount string
-}
-
 type Objects struct {
 	Items      []ObjectItem
 	TotalSize  int

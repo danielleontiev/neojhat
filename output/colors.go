@@ -1,4 +1,4 @@
-package printing
+package output
 
 type Color string
 
@@ -15,7 +15,7 @@ const (
 	cWhite  Color = "\033[97m"
 )
 
-// addColoe adds ANSI codes of given color
+// addColor adds ANSI codes of given color
 // to the string
 func addColor(str string, col Color) string {
 	return string(col) + str + string(cReset)
