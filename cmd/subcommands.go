@@ -25,7 +25,7 @@ const (
 	metaFileName               = "meta.bin"
 )
 
-func GetThreads(hprofFileName string, noColor, localVars bool) error {
+func GetThreads(hprofFileName string, noColor, localVars bool, outputType OutputType) error {
 	hprof, err := os.Open(hprofFileName)
 	if err != nil {
 		return fmt.Errorf("can't open file [%s]: %w", hprofFileName, err)
@@ -61,15 +61,21 @@ func GetThreads(hprofFileName string, noColor, localVars bool) error {
 	if err != nil {
 		return fmt.Errorf("can't parse thread dump: %w", err)
 	}
-	if noColor {
-		output.ThreadsPlain(threadDump, localVars, os.Stdout)
+	if outputType == Plain {
+		if noColor {
+			output.ThreadsPlain(threadDump, localVars, os.Stdout)
+			return nil
+		}
+		output.ThreadsPlainColor(threadDump, localVars)
 		return nil
 	}
-	output.ThreadsPlainColor(threadDump, localVars)
-	return nil
+	if outputType == Html {
+		return output.ThreadsHtml(threadDump, localVars, os.Stdout)
+	}
+	return fmt.Errorf("unknown output type '%s'", &outputType)
 }
 
-func GetSummary(hprofFileName string, noColor, allProps bool) error {
+func GetSummary(hprofFileName string, noColor, allProps bool, outputType OutputType) error {
 	hprof, err := os.Open(hprofFileName)
 	if err != nil {
 		return fmt.Errorf("can't open file [%s]: %w", hprofFileName, err)
@@ -105,15 +111,21 @@ func GetSummary(hprofFileName string, noColor, allProps bool) error {
 	if err != nil {
 		return fmt.Errorf("can't parse summary: %w", err)
 	}
-	if noColor {
-		output.SummaryPlain(s, os.Stdout)
+	if outputType == Plain {
+		if noColor {
+			output.SummaryPlain(s, os.Stdout)
+			return nil
+		}
+		output.SummaryPlainColor(s)
 		return nil
 	}
-	output.SummaryPlainColor(s)
-	return nil
+	if outputType == Html {
+		return output.SummaryHtml(s, os.Stdout)
+	}
+	return fmt.Errorf("unknown output type '%s'", &outputType)
 }
 
-func GetObjects(hprofFileName string, noColor bool, sortBy objects.SortBy) error {
+func GetObjects(hprofFileName string, noColor bool, sortBy objects.SortBy, outputType OutputType) error {
 	hprof, err := os.Open(hprofFileName)
 	if err != nil {
 		return fmt.Errorf("can't open file [%s]: %w", hprofFileName, err)
@@ -149,12 +161,18 @@ func GetObjects(hprofFileName string, noColor bool, sortBy objects.SortBy) error
 	if err != nil {
 		return fmt.Errorf("can't parse objects: %w", err)
 	}
-	if noColor {
-		output.ObjectsPlain(obj, os.Stdout)
+	if outputType == Plain {
+		if noColor {
+			output.ObjectsPlain(obj, os.Stdout)
+			return nil
+		}
+		output.ObjectsPlainColor(obj)
 		return nil
 	}
-	output.ObjectsPlainColor(obj)
-	return nil
+	if outputType == Html {
+		return output.ObjectsHtml(obj, os.Stdout)
+	}
+	return fmt.Errorf("unknown output type '%s'", &outputType)
 }
 
 func ParseHprof(hprofFileName string, nonInteractive bool) error {

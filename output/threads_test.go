@@ -57,6 +57,10 @@ var (
 	threads1txt string
 	//go:embed test-data/threads2.txt
 	threads2txt string
+	//go:embed test-data/threads1.html
+	threads1html string
+	//go:embed test-data/threads2.html
+	threads2html string
 )
 
 func TestThreadPlain1(t *testing.T) {
@@ -74,5 +78,23 @@ func TestThreadPlain2(t *testing.T) {
 	result := builder.String()
 	if result != threads2txt {
 		compareLineByLine(t, result, threads2txt)
+	}
+}
+
+func TestThreadHtml1(t *testing.T) {
+	builder := &strings.Builder{}
+	output.ThreadsHtml(threads1, true, builder)
+	result := builder.String()
+	if result != threads1html {
+		compareLineByLine(t, result, threads1html)
+	}
+}
+
+func TestThreadHtml2(t *testing.T) {
+	builder := &strings.Builder{}
+	output.ThreadsHtml(threads1, false, builder)
+	result := builder.String()
+	if result != threads2html {
+		compareLineByLine(t, result, threads2html)
 	}
 }

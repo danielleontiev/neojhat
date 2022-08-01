@@ -29,16 +29,19 @@ func init() {
 	ThreadsCommand.BoolVar(&ThreadFlags.NoColor, noColorName, noColorDefault, noColorDesc)
 	ThreadsCommand.BoolVar(&ThreadFlags.NonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
 	ThreadsCommand.BoolVar(&ThreadFlags.LocalVars, localVarsName, localVarsDefault, localVarsDesc)
+	ThreadsCommand.Var(&ThreadFlags.Output, outputName, outputDesc)
 
 	SummaryCommand.StringVar(&SummaryFlags.Hprof, hprofName, hprofDefault, hprofDesc)
 	SummaryCommand.BoolVar(&SummaryFlags.NoColor, noColorName, noColorDefault, noColorDesc)
 	SummaryCommand.BoolVar(&SummaryFlags.NonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
 	SummaryCommand.BoolVar(&SummaryFlags.AllProps, allPropsName, allPropsDefault, allPropsDesc)
+	SummaryCommand.Var(&SummaryFlags.Output, outputName, outputDesc)
 
 	ObjectsCommand.StringVar(&ObjectsFlags.Hprof, hprofName, hprofDefault, hprofDesc)
 	ObjectsCommand.BoolVar(&ObjectsFlags.NoColor, noColorName, noColorDefault, noColorDesc)
 	ObjectsCommand.BoolVar(&ObjectsFlags.NonInteractive, nonInteractiveName, nonInteractiveDefault, nonInteractiveDesc)
 	ObjectsCommand.Var(&ObjectsFlags.SortBy, sortByName, sortByDesc)
+	ObjectsCommand.Var(&ObjectsFlags.Output, outputName, outputDesc)
 }
 
 func PrintHelp() {
@@ -79,13 +82,49 @@ const (
 
 	sortByName = "sort-by"
 	sortByDesc = "Sort output by 'size' or 'count' (default)"
+
+	outputName = "output"
+	outputDesc = "Output type. 'plain' (default) or 'html'"
 )
+
+type OutputType int
+
+const (
+	Plain OutputType = iota
+	Html
+)
+
+func (o *OutputType) String() string {
+	switch *o {
+	case Plain:
+		return "plain"
+	case Html:
+		return "html"
+	}
+	return "unknown"
+}
+
+func (o *OutputType) Set(value string) error {
+	switch value {
+	case "plain":
+		*o = Plain
+		return nil
+	case "html":
+		*o = Html
+		return nil
+	case "":
+		*o = Plain
+		return nil
+	}
+	return fmt.Errorf("Use \"plain\" or \"html\" instead")
+}
 
 type threadFlags struct {
 	Hprof          string
 	NoColor        bool
 	NonInteractive bool
 	LocalVars      bool
+	Output         OutputType
 }
 
 type summaryFlags struct {
@@ -93,6 +132,7 @@ type summaryFlags struct {
 	NoColor        bool
 	NonInteractive bool
 	AllProps       bool
+	Output         OutputType
 }
 
 type objectsFlags struct {
@@ -100,6 +140,7 @@ type objectsFlags struct {
 	NoColor        bool
 	NonInteractive bool
 	SortBy         objects.SortBy
+	Output         OutputType
 }
 
 var (

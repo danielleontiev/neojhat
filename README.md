@@ -50,6 +50,8 @@ Usage of threads:
         disable color output
   -non-interactive
         disable interactive output
+  -output value
+        Output type. 'plain' (default) or 'html'
 
 Usage of summary:
   -all-props
@@ -60,6 +62,8 @@ Usage of summary:
         disable color output
   -non-interactive
         disable interactive output
+  -output value
+        Output type. 'plain' (default) or 'html'
 
 Usage of objects:
   -hprof string
@@ -68,6 +72,8 @@ Usage of objects:
         disable color output
   -non-interactive
         disable interactive output
+  -output value
+        Output type. 'plain' (default) or 'html'
   -sort-by value
         Sort output by 'size' or 'count' (default)
 
@@ -273,3 +279,17 @@ java.lang.reflect.Method                         |            1119 (1%) |       
 java.util.HashMap$Node                           |            4851 (6%) |           132K (5%) |
 // ... full output omitted ...
 ```
+
+## Output Type
+
+Output type can be controlled with `--output` flag. Currently supported formats are:
+
+- `plain` (default value)
+  Formats output as simple plain-text as in examples above. By default it uses
+  colorful output with ANSI colors. Can be disabled with `--no-color` flag.
+
+- `html`
+  Formats output as single .html page that can be opened in the browser. For example,
+  ```sh
+  neojhat threads --hprof /path/to/hprof/file --output html > threads.html
+  ```
