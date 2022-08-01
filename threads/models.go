@@ -1,4 +1,4 @@
-package threaddump
+package threads
 
 type ThreadDump struct {
 	StackTraces []StackTrace

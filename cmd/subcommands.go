@@ -8,7 +8,7 @@ import (
 	"github.com/danielleontiev/neojhat/objects"
 	"github.com/danielleontiev/neojhat/storage"
 	"github.com/danielleontiev/neojhat/summary"
-	"github.com/danielleontiev/neojhat/threaddump"
+	"github.com/danielleontiev/neojhat/threads"
 )
 
 const (
@@ -56,15 +56,15 @@ func GetThreads(hprofFileName string, noColor, localVars bool) error {
 		return err
 	}
 	parsedAccessor := dump.NewParsedAccessor(hprof, bigReader, smallReader, metaReader)
-	threadDump, err := threaddump.GetThreadDump(parsedAccessor)
+	threadDump, err := threads.GetThreadDump(parsedAccessor)
 	if err != nil {
 		return fmt.Errorf("can't parse thread dump: %w", err)
 	}
 	if noColor {
-		threaddump.PrettyPrint(threadDump, localVars)
+		threads.PrettyPrint(threadDump, localVars)
 		return nil
 	}
-	threaddump.PrettyPrintColor(threadDump, localVars)
+	threads.PrettyPrintColor(threadDump, localVars)
 	return nil
 }
 

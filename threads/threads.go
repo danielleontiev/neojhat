@@ -1,5 +1,5 @@
 /*
-	threaddump extracts thread dump of JVM at the moment heap dump
+	threads extracts thread dump of JVM at the moment heap dump
 	was taken and outputs it. It also has functions for pretty-print
 	the result.
 
@@ -20,7 +20,7 @@
 	   and so on.
 	8) Provide the informative output for the above
 */
-package threaddump
+package threads
 
 import (
 	"github.com/danielleontiev/neojhat/core"
