@@ -1,11 +1,14 @@
 package output
 
 import (
+	_ "embed"
+	"strconv"
+
 	"fmt"
+	"html/template"
 	"io"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 	"unicode/utf8"
 
@@ -118,4 +121,29 @@ func getPrintItems(o objects.Objects) printObject {
 	printObj.TotalSize = format.Size(o.TotalSize)
 	printObj.Items = printItems
 	return printObj
+}
+
+var (
+	//go:embed templates/objects.html
+	objectsHtml string
+)
+
+// ObjectsHtml prints the output of objects command in nice
+// beautifully-formatted HTML
+func ObjectsHtml(o objects.Objects, destination io.Writer) error {
+	coreTemplate, err := template.New("core").Parse(coreHtml)
+	if err != nil {
+		return err
+	}
+	objectsTemplate, err := coreTemplate.Parse(objectsHtml)
+	if err != nil {
+		return err
+	}
+	printObj := getPrintItems(o)
+
+	return objectsTemplate.Execute(destination, data{
+		Title:   "Heap Objects",
+		Favicon: faviconBase64,
+		Payload: printObj,
+	})
 }

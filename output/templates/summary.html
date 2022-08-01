@@ -1,0 +1,28 @@
+{{define "style"}}
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.1rem 1rem;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+{{end}}
+
+{{define "body"}}
+
+<h1>{{.Title}}</h1>
+
+<table>
+    <tr><th>Property</th><th>Value</th></tr>
+    {{range .Payload}}
+        <tr><td colspan="2"><h3>{{.Name}}</h3></td></tr>
+        {{range .Kv}}
+        <tr><td>{{.Key}}</td><td>{{.Val}}</td></tr>
+        {{end}}
+    {{end}}
+</table>
+
+{{end}}

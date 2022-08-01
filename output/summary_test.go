@@ -36,6 +36,8 @@ var summary1 = summary.Summary{
 var (
 	//go:embed test-data/summary1.txt
 	summary1txt string
+	//go:embed test-data/summary1.html
+	summary1html string
 )
 
 func TestSummaryPlain1(t *testing.T) {
@@ -45,4 +47,11 @@ func TestSummaryPlain1(t *testing.T) {
 	if result != summary1txt {
 		compareLineByLine(t, result, summary1txt)
 	}
+}
+
+func TestSummaryHtml1(t *testing.T) {
+	builder := &strings.Builder{}
+	output.SummaryHtml(summary1, builder)
+	result := builder.String()
+	compareLineByLine(t, summary1html, result)
 }

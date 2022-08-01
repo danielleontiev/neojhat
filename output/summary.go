@@ -1,7 +1,10 @@
 package output
 
 import (
+	_ "embed"
+
 	"fmt"
+	"html/template"
 	"io"
 	"os"
 	"strconv"
@@ -93,4 +96,28 @@ func maxKeyLength(props []Properties) int {
 		}
 	}
 	return maxKeyLen
+}
+
+var (
+	//go:embed templates/summary.html
+	summaryHtml string
+)
+
+// SummaryHtml prints the output of summary command in nice
+// beautifully-formatted HTML
+func SummaryHtml(s summary.Summary, destination io.Writer) error {
+	coreTemplate, err := template.New("core").Parse(coreHtml)
+	if err != nil {
+		return err
+	}
+	summaryTemplate, err := coreTemplate.Parse(summaryHtml)
+	if err != nil {
+		return err
+	}
+	props := getPropertiesList(s)
+	return summaryTemplate.Execute(destination, data{
+		Title:   "Heap Summary",
+		Favicon: faviconBase64,
+		Payload: props,
+	})
 }

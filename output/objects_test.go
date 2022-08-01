@@ -46,6 +46,8 @@ var objects1 = objects.Objects{
 var (
 	//go:embed test-data/objects1.txt
 	objects1txt string
+	//go:embed test-data/objects1.html
+	objects1html string
 )
 
 func TestObjectsPlain1(t *testing.T) {
@@ -54,5 +56,14 @@ func TestObjectsPlain1(t *testing.T) {
 	result := builder.String()
 	if result != objects1txt {
 		compareLineByLine(t, result, objects1txt)
+	}
+}
+
+func TestObjectsHtml1(t *testing.T) {
+	builder := &strings.Builder{}
+	output.ObjectsHtml(objects1, builder)
+	result := builder.String()
+	if result != objects1html {
+		compareLineByLine(t, result, objects1html)
 	}
 }

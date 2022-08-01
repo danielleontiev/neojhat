@@ -1,0 +1,58 @@
+{{define "style"}}
+        .thread {
+            margin-bottom: 4rem;
+            overflow-x: scroll;
+            white-space: nowrap;
+        }
+        .one {
+            padding-left: 3rem;
+        }
+        .two {
+            padding-left: 6rem;
+        }
+        .thread-description {
+            font-weight: 600;
+        }
+        .ret {
+            color: #686164;
+        }
+        .class-name {
+            color: #8e7908;
+        }
+        .method-name {
+            color: #a20000;
+        }
+        .args {
+            color: #807070;
+        }
+        .location {
+            color: #000000;
+        }
+        .local-word {
+            color: #807070;
+        }
+        .local {
+            color: #807070;
+        }
+{{end}}
+
+{{define "body"}}
+
+<h1>{{.Title}}</h1>
+
+{{ $LocalVars := .Payload.LocalVars }}
+{{range .Payload.Traces}}
+    <div class="thread">
+        <p class="thread-description">"{{.ThreadName}}", ID={{.ThreadId}}, prio={{.ThreadPriority}}, status={{.ThreadStatus}}{{if .ThreadDaemon}} (daemon){{end}}</p>
+        {{range .Frames}}
+            <p class="one"><span class="ret">{{.Ret}}</span> <span class="class-name">{{.ClassName}}.</span><span class="method-name">{{.MethodName}}</span><span class="args">({{.Args}})</span> <span class="location">{{.Location}}</span></p>
+            {{if $LocalVars}}
+                {{range .LocalFrames}}
+                    <p class="two"><span class="local-word">local</span> <span class="local">{{.}}</span></p>
+                {{end}}
+            {{end}}
+        {{end}}
+    </div>
+{{end}}
+
+{{end}}

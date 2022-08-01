@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHRleHQgeT0iMjgiIGZvbnQtc2l6ZT0iMjgiPuKYle&#43;4jzwvdGV4dD4KPC9zdmc&#43;Cg==" />
+    <title>Thread Dump</title>
+    <style>
+        body {
+            font-family: Ubuntu, 'SF Mono', Helvetica, sans-serif;
+        }
+    </style>
+    <style>
+
+        .thread {
+            margin-bottom: 4rem;
+            overflow-x: scroll;
+            white-space: nowrap;
+        }
+        .one {
+            padding-left: 3rem;
+        }
+        .two {
+            padding-left: 6rem;
+        }
+        .thread-description {
+            font-weight: 600;
+        }
+        .ret {
+            color: #686164;
+        }
+        .class-name {
+            color: #8e7908;
+        }
+        .method-name {
+            color: #a20000;
+        }
+        .args {
+            color: #807070;
+        }
+        .location {
+            color: #000000;
+        }
+        .local-word {
+            color: #807070;
+        }
+        .local {
+            color: #807070;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+
+<h1>Thread Dump</h1>
+
+
+
+    <div class="thread">
+        <p class="thread-description">"main", ID=1, prio=5, status=TIMED_WAITING</p>
+
+            <p class="one"><span class="ret">void</span> <span class="class-name">java.lang.Thread.</span><span class="method-name">sleep</span><span class="args">(long)</span> <span class="location">Thread.java:NativeMethod</span></p>
+
+
+            <p class="one"><span class="ret">void</span> <span class="class-name">Main.</span><span class="method-name">main</span><span class="args">(java.lang.String[])</span> <span class="location">Main.java:6</span></p>
+
+
+    </div>
+
+
+
+
+</body>
+
+</html>

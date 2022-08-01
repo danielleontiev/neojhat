@@ -35,7 +35,7 @@ func threads() {
 	if err := cmd.ParseHprof(flags.Hprof, flags.NonInteractive); err != nil {
 		onError(err)
 	}
-	if err := cmd.GetThreads(flags.Hprof, flags.NoColor, flags.LocalVars); err != nil {
+	if err := cmd.GetThreads(flags.Hprof, flags.NoColor, flags.LocalVars, flags.Output); err != nil {
 		onError(err)
 	}
 }
@@ -48,7 +48,7 @@ func summary() {
 	if err := cmd.ParseHprof(flags.Hprof, flags.NonInteractive); err != nil {
 		onError(err)
 	}
-	if err := cmd.GetSummary(flags.Hprof, flags.NoColor, flags.AllProps); err != nil {
+	if err := cmd.GetSummary(flags.Hprof, flags.NoColor, flags.AllProps, flags.Output); err != nil {
 		onError(err)
 	}
 }
@@ -61,7 +61,7 @@ func objects() {
 	if err := cmd.ParseHprof(flags.Hprof, flags.NonInteractive); err != nil {
 		onError(err)
 	}
-	if err := cmd.GetObjects(flags.Hprof, flags.NoColor, flags.SortBy); err != nil {
+	if err := cmd.GetObjects(flags.Hprof, flags.NoColor, flags.SortBy, flags.Output); err != nil {
 		onError(err)
 	}
 }

@@ -1,7 +1,10 @@
 package output
 
 import (
+	_ "embed"
+
 	"fmt"
+	"html/template"
 	"io"
 	"sort"
 	"strings"
@@ -104,4 +107,79 @@ func createPrettyColorfulFrame(frame threads.StackFrame) string {
 	args, ret := format.Signature(frame.MethodSignature)
 	prettyLocation := Cyan(createLocation(frame.FileName, frame.LineNumber))
 	return ret + " " + prettyClassName + Yellow(".") + Red(frame.MethodName) + "(" + args + ")" + " " + prettyLocation
+}
+
+var (
+	//go:embed templates/threads.html
+	threadsHtml string
+)
+
+type printTrace struct {
+	ThreadName     string
+	ThreadId       int
+	ThreadDaemon   bool
+	ThreadPriority int
+	ThreadStatus   string
+	Frames         []printFrame
+}
+
+type printFrame struct {
+	ClassName   string
+	MethodName  string
+	Args        string
+	Ret         string
+	Location    string
+	LocalFrames []string
+}
+
+// ThreadsHtml prints the output of summary command in nice
+// beautifully-formatted HTML
+func ThreadsHtml(threadDump threads.ThreadDump, localVars bool, destination io.Writer) error {
+	coreTemplate, err := template.New("core").Parse(coreHtml)
+	if err != nil {
+		return err
+	}
+	threadsTemplate, err := coreTemplate.Parse(threadsHtml)
+	if err != nil {
+		return err
+	}
+	var traces []printTrace
+	for _, t := range getSortedStackTraces(threadDump) {
+		var frames []printFrame
+		for _, f := range t.Frames {
+			var stackVariables []string
+			for _, s := range f.LocalFrames {
+				stackVariables = append(stackVariables, createPrettyStackVariable(s))
+			}
+			args, ret := format.Signature(f.MethodSignature)
+			loc := createLocation(f.FileName, f.LineNumber)
+			frames = append(frames, printFrame{
+				ClassName:   format.ClassName(f.ClassName),
+				MethodName:  f.MethodName,
+				Args:        args,
+				Ret:         ret,
+				Location:    loc,
+				LocalFrames: stackVariables,
+			})
+		}
+		traces = append(traces, printTrace{
+			ThreadName:     t.ThreadName,
+			ThreadId:       t.ThreadId,
+			ThreadPriority: t.ThreadPriority,
+			ThreadStatus:   t.ThreadStatus.String(),
+			ThreadDaemon:   t.ThreadDaemon,
+			Frames:         frames,
+		})
+	}
+	return threadsTemplate.Execute(destination, data{
+		Title:   "Thread Dump",
+		Favicon: faviconBase64,
+		Payload: struct {
+			Traces    []printTrace
+			LocalVars bool
+		}{
+			Traces:    traces,
+			LocalVars: localVars,
+		},
+	})
 }
