@@ -1,4 +1,4 @@
-package threaddump
+package threads
 
 import (
 	"fmt"
