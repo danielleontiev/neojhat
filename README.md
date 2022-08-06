@@ -5,19 +5,32 @@ with huge dump files that do not fit into computer RAM.
 
 ## Install
 
-### Obtaining pre-compiled binary
-
-Go to **Actions**, select the latest successful pipeline, click **Summary** and download `neojhat.zip`
-from **Artifacts** section.
 
 ### Compile and install with `go install`
 
 1. Make sure you have `Go` installed. Refer to https://go.dev/dl/ for installation instructions.
-2. Run the command
-```sh
-go install github.com/danielleontiev/neojhat@latest
-```
+
+2. Run the command if you would like to get the latest development version
+
+   ```sh
+   go install github.com/danielleontiev/neojhat@latest
+   ```
+
+   or run this command to obtain the latest stable release
+   ```sh
+   go install github.com/danielleontiev/neojhat@v0.1.0
+   ```
+
 3. Add `$USER/go/bin` to your `$PATH` or run directly from the directory
+
+### Download pre-compiled release binary from Releases page
+
+Go to [Releases](https://github.com/danielleontiev/neojhat/releases) and pick the binary from there.
+
+### Obtaining pre-compiled development version binary
+
+Go to [Actions](https://github.com/danielleontiev/neojhat/actions), select the
+latest successful workflow and download `neojhat` from **Artifacts** section.
 
 ## Help
 
