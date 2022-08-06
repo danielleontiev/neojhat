@@ -18,7 +18,7 @@ with huge dump files that do not fit into computer RAM.
 
    or run this command to obtain the latest stable release
    ```sh
-   go install github.com/danielleontiev/neojhat@v0.1.0
+   go install github.com/danielleontiev/neojhat@v0.2.0
    ```
 
 3. Add `$USER/go/bin` to your `$PATH` or run directly from the directory
@@ -39,6 +39,7 @@ neojhat --help
 ```
 
 ```
+neojhat v0.2.0
 neojhat (threads|summary|objects)
 
 Usage of threads:
