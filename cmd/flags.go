@@ -9,6 +9,10 @@ import (
 )
 
 const (
+	version = "v0.2.0"
+)
+
+const (
 	Threads = "threads"
 	Summary = "summary"
 	Objects = "objects"
@@ -45,6 +49,7 @@ func init() {
 }
 
 func PrintHelp() {
+	fmt.Printf("neojhat %s\n", version)
 	fmt.Printf("neojhat (%s|%s|%s)\n\n", Threads, Summary, Objects)
 	ThreadsCommand.Usage()
 	fmt.Println()
