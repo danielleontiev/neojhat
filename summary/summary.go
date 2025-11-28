@@ -1,8 +1,6 @@
-/*
-	summary extracts common information from heap dump
-	such as system properties of the system that was
-	running application.
-*/
+// summary extracts common information from heap dump
+// such as system properties of the system that was
+// running application.
 package summary
 
 import (

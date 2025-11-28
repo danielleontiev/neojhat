@@ -1,15 +1,13 @@
-/*
-	core is a package for parsing JVM .hprof files.
-
-	Models are based on the following JDK source:
-	https://github.com/openjdk/jdk/blob/c1e39faaa99ee62ff626ffec9f978ed0f8ffaca1/src/hotspot/share/services/heapDumper.cpp
-
-	It contains basic utility primitives that should be used to parse
-	the given .hprof dump in the form of io.Reader. Functions in
-	this packages are not aware of the position in the input, they are
-	simple primitives to parse structures that .hprof could contain. The whole
-	structure of .hprof file is written in code comment at the link above.
-*/
+// core is a package for parsing JVM .hprof files.
+//
+// Models are based on the following JDK source:
+// https://github.com/openjdk/jdk/blob/c1e39faaa99ee62ff626ffec9f978ed0f8ffaca1/src/hotspot/share/services/heapDumper.cpp
+//
+// It contains basic utility primitives that should be used to parse
+// the given .hprof dump in the form of io.Reader. Functions in
+// this packages are not aware of the position in the input, they are
+// simple primitives to parse structures that .hprof could contain. The whole
+// structure of .hprof file is written in code comment at the link above.
 package core
 
 import (

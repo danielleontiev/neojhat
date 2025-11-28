@@ -1,33 +1,31 @@
-/*
-	storage package has implementation of storages for small objects and
-	index storage for big objects.
-
-	Storage for small objects is simple structure with hash maps and lists
-	which are filled with parsed records during parsing of heap dump. It's
-	in-memory storage and to avoid parsing small objects every time, it has
-	serialization machinery that allows to put all contents to the file and
-	restore it. Data is serialized to <heap dump name>.db/small-records.bin
-
-	Storage for big objects does not try to hold all in RAM. Instead it stores
-	index to the index file that later is used to access that records. Index
-	files are <heap dump>.db/instance-dump.idx.bin,
-	<heap dump>.db/obj-array-dump.idx.bin and <heap dump>.db/prim-array-dump.idx.bin
-
-	For effective way of accessing index records binary search is used.
-	Index records are key:value pairs of 8+8=16 bytes which is used to store
-	offsets of some objects in .hprof file. All objects in .hprof files have
-	unique identifiers and correspoiding offsets. F.e. "instance dump" object
-	with object id = 1 and offset = 1 could be written to index file and
-	the offset could be obtained later and the whole class dump could be parsed.
-	Typically, using index file is more effective than linear search in .hprof file.
-	Hovewer, it could not be true for machines with HDD disk because this mechanism
-	assumes the data is in increasing sorted order by key because Get() is
-	binary search. The package could be easily misused - data should be
-	written in sorted order or should be sorted after write before read. For most
-	sections of .hprof such as instance dumps and array dumps it's true by default -
-	data is stored in the dump already sorted. But anyway, the order is tracked
-	during parsing to detect anomalies in records order.
-*/
+// storage package has implementation of storages for small objects and
+// index storage for big objects.
+//
+// Storage for small objects is simple structure with hash maps and lists
+// which are filled with parsed records during parsing of heap dump. It's
+// in-memory storage and to avoid parsing small objects every time, it has
+// serialization machinery that allows to put all contents to the file and
+// restore it. Data is serialized to <heap dump name>.db/small-records.bin
+//
+// Storage for big objects does not try to hold all in RAM. Instead it stores
+// index to the index file that later is used to access that records. Index
+// files are <heap dump>.db/instance-dump.idx.bin,
+// <heap dump>.db/obj-array-dump.idx.bin and <heap dump>.db/prim-array-dump.idx.bin
+//
+// For effective way of accessing index records binary search is used.
+// Index records are key:value pairs of 8+8=16 bytes which is used to store
+// offsets of some objects in .hprof file. All objects in .hprof files have
+// unique identifiers and correspoiding offsets. F.e. "instance dump" object
+// with object id = 1 and offset = 1 could be written to index file and
+// the offset could be obtained later and the whole class dump could be parsed.
+// Typically, using index file is more effective than linear search in .hprof file.
+// Hovewer, it could not be true for machines with HDD disk because this mechanism
+// assumes the data is in increasing sorted order by key because Get() is
+// binary search. The package could be easily misused - data should be
+// written in sorted order or should be sorted after write before read. For most
+// sections of .hprof such as instance dumps and array dumps it's true by default -
+// data is stored in the dump already sorted. But anyway, the order is tracked
+// during parsing to detect anomalies in records order.
 package storage
 
 import (

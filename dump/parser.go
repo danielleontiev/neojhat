@@ -1,20 +1,18 @@
-/*
-	dump is the package responsible parsing the whole .hprof file and
-	accessing parsed information saved on disk. For big records (instances,
-	object arrays and primitive arrays) parser uses indexing techinque -
-	it does not store parsed records, instead, it saves position of the
-	record to index file that will be used later by accessor to find position
-	of the record in the dump and parse it on demand. Tipically, big
-	records can occupy >90% of heap dump size and if heap dump is big then
-	all records simply do not fit into RAM. Moreover, heap is dumped to
-	.hprof by traversing all objects in JVM and they are put to the file
-	as they are presented in the heap. So, accessing arbitrary object by its
-	identifier requires searching and it could be optimized using index.
-	Other records are small and usually fit into RAM easily. For such records
-	parser puts them into in-memory storage and after parsing the storage is
-	serialized to the file. Accessor simply restores the storage from file when
-	needed.
-*/
+// dump is the package responsible parsing the whole .hprof file and
+// accessing parsed information saved on disk. For big records (instances,
+// object arrays and primitive arrays) parser uses indexing techinque -
+// it does not store parsed records, instead, it saves position of the
+// record to index file that will be used later by accessor to find position
+// of the record in the dump and parse it on demand. Tipically, big
+// records can occupy >90% of heap dump size and if heap dump is big then
+// all records simply do not fit into RAM. Moreover, heap is dumped to
+// .hprof by traversing all objects in JVM and they are put to the file
+// as they are presented in the heap. So, accessing arbitrary object by its
+// identifier requires searching and it could be optimized using index.
+// Other records are small and usually fit into RAM easily. For such records
+// parser puts them into in-memory storage and after parsing the storage is
+// serialized to the file. Accessor simply restores the storage from file when
+// needed.
 package dump
 
 import (

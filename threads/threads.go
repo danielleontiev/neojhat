@@ -1,24 +1,22 @@
-/*
-	threads extracts thread dump of JVM at the moment heap dump
-	was taken and outputs it.
-
-	Collecting the thread dump from .hprof file is the following
-	process:
-
-	1) List all HPROF_GC_ROOT_THREAD_OBJ
-	2) Find corresponding HPROF_LOAD_CLASS
-	3) Find all HPROF_GC_ROOT_JAVA_FRAME
-	4) For each HPROF_GC_ROOT_THREAD_OBJ collect all HPROF_TRACE of
-	   the thread and for each HPROF_TRACE collect all the HPROF_FRAME
-	5) For each HPROF_FRAME find corresponding HPROF_GC_ROOT_JAVA_FRAME
-	   records and match them by frame number in stack trace.
-	6) Resolve all names presented using HPROF_UTF8
-	7) For each thread read the instance and class values from the heap
-	   (meaning HPROF_GC_CLASS_DUMP, HPROF_GC_INSTANCE_DUMP) and extract
-	   useful information such as thread name, thread id, thread priority,
-	   and so on.
-	8) Provide the informative output for the above
-*/
+// threads extracts thread dump of JVM at the moment heap dump
+// was taken and outputs it.
+//
+// Collecting the thread dump from .hprof file is the following
+// process:
+//
+//  1. List all HPROF_GC_ROOT_THREAD_OBJ
+//  2. Find corresponding HPROF_LOAD_CLASS
+//  3. Find all HPROF_GC_ROOT_JAVA_FRAME
+//  4. For each HPROF_GC_ROOT_THREAD_OBJ collect all HPROF_TRACE of
+//     the thread and for each HPROF_TRACE collect all the HPROF_FRAME
+//  5. For each HPROF_FRAME find corresponding HPROF_GC_ROOT_JAVA_FRAME
+//     records and match them by frame number in stack trace.
+//  6. Resolve all names presented using HPROF_UTF8
+//  7. For each thread read the instance and class values from the heap
+//     (meaning HPROF_GC_CLASS_DUMP, HPROF_GC_INSTANCE_DUMP) and extract
+//     useful information such as thread name, thread id, thread priority,
+//     and so on.
+//  8. Provide the informative output for the above
 package threads
 
 import (

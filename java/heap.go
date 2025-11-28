@@ -1,14 +1,12 @@
-/*
-	heap provides functions for extracting meaningfull data from heap dump.
-	For example, it is able to parse class hierarchies from HPROF_GC_CLASS_DUMP
-	records into the linked-list like data structure or parse values of heap
-	objects like instances of instances fields.
-
-	Assembling the such data requires a lot of references traverse by the identifiers
-	of heap objects. Package dump.ParsedAccessor is used for that purpose. For example,
-	to get the class from class dump it's important to follow the links and collect
-	superclass, superclass of superclass, etc.
-*/
+// heap provides functions for extracting meaningfull data from heap dump.
+// For example, it is able to parse class hierarchies from HPROF_GC_CLASS_DUMP
+// records into the linked-list like data structure or parse values of heap
+// objects like instances of instances fields.
+//
+// Assembling the such data requires a lot of references traverse by the identifiers
+// of heap objects. Package dump.ParsedAccessor is used for that purpose. For example,
+// to get the class from class dump it's important to follow the links and collect
+// superclass, superclass of superclass, etc.
 package java
 
 import (
