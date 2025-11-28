@@ -2,37 +2,25 @@ name: Go
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - dev
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
-
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
       with:
-        go-version: 1.18
+        go-version-file: 'go.mod'
 
-    - name: Check Formatting
-      run: test -z "$(gofmt -l -s .)"
-
-    - name: Build
-      run: make build
-
-    - name: Test
-      run: make test
-    
-    - name: Artifacts
-      run: make artifacts
-    
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: neojhat
-        path:
-          out
+    - name: check
+      run: make check
