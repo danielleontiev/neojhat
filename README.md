@@ -27,11 +27,6 @@ with huge dump files that do not fit into computer RAM.
 
 Go to [Releases](https://github.com/danielleontiev/neojhat/releases) and pick the binary from there.
 
-### Obtaining pre-compiled development version binary
-
-Go to [Actions](https://github.com/danielleontiev/neojhat/actions), select the
-latest successful workflow and download `neojhat` from **Artifacts** section.
-
 ## Help
 
 ```sh
