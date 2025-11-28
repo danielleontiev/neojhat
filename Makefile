@@ -16,7 +16,7 @@ test:
 	go test -count=1 ./...
 
 build:
-	go build .
+	go build ./cmd/neojhat
 
 cover:
 	go test -coverprofile coverage.out ./...

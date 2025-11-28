@@ -13,12 +13,12 @@ with huge dump files that do not fit into computer RAM.
 2. Run the command if you would like to get the latest development version
 
    ```sh
-   go install github.com/danielleontiev/neojhat@latest
+   go install github.com/danielleontiev/neojhat/cmd/neojhat@latest
    ```
 
    or run this command to obtain the latest stable release
    ```sh
-   go install github.com/danielleontiev/neojhat@v0.2.0
+   go install github.com/danielleontiev/neojhat/cmd/neojhat@v0.2.0
    ```
 
 3. Add `$USER/go/bin` to your `$PATH` or run directly from the directory

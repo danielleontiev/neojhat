@@ -1,7 +1,7 @@
 .vscode/
 .idea/
 .hprof
-neojhat
+/neojhat
 *.db/
 coverage.out
 out/
